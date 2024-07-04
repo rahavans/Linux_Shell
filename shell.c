@@ -70,7 +70,7 @@ void printDirectoryPath(){
 }
 
 void printDirectoryContents(){
-    struct dirent *content;
+    struct dirent *dirContent;
     char cwd[1024];
     if(getcwd(cwd, sizeof(cwd)) == NULL){
         fprintf(stderr, "Cannot retrieve currrent directory path!\n");
@@ -81,12 +81,12 @@ void printDirectoryContents(){
         fprintf(stderr, "Cannot open current directory path\n");
     }
 
-    while((content = readdir(directory))){
-        if((strcmp(content->d_name, ".") == 0) || (strcmp(content->d_name, "..") == 0)){
+    while((dirContent = readdir(directory))){
+        if((strcmp(dirContent->d_name, ".") == 0) || (strcmp(dirContent->d_name, "..") == 0)){
             continue;
         }
         else{
-            printf("%s\n",content->d_name);
+            printf("%s\n", dirContent->d_name);
         }
     }
     closedir(directory);
@@ -128,9 +128,28 @@ int makeDirectory(char *input){
     }
     printf("Successfully made directory! Located at: ");
     printDirectoryPath();
+    free(parsedBuffer);
     return 0;
 }
 
+int removeDirectory(char *input){
+    char** parsedBuffer = malloc(1024*sizeof(char*));
+    if(parsedBuffer == NULL){
+        fprintf(stderr, "Insufficient memory!\n");
+        return -1;
+    }
+    if(parseInput(input, parsedBuffer) == -1){
+        fprintf(stderr, "Could not process command\n");
+        return -1;
+    }
+    if(rmdir(parsedBuffer[1]) == -1){
+        fprintf(stderr, "Cannot remove specified directory");
+        return -1;
+    }
+    printf("Successfully removed directory: %s", parsedBuffer[1]);
+    free(parsedBuffer);
+    return 0;
+}
 
 
 

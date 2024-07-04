@@ -11,7 +11,7 @@ int main(){
   startProgram();
   readCommandLine(inputBuffer);
   while(1){
-    makeDirectory(inputBuffer);
+    removeDirectory(inputBuffer);
     readCommandLine(inputBuffer);
   }
   return 0;

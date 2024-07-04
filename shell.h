@@ -13,13 +13,14 @@
 #include <dirent.h>
 
 void startProgram();
-void clearScreen();
+void clearScreen(); // clear
 int parseInput(char* input, char** parsedInput);
 int readCommandLine(char* input);
-void printDirectoryPath();
-void printDirectoryContents();
-int changeDirectories(char *input);
-int makeDirectory(char *input);
+void printDirectoryPath(); // pwd
+void printDirectoryContents(); // ls
+int changeDirectories(char *input); // cd
+int makeDirectory(char *input); // mkdir
+int removeDirectory(char *input); // rmdir
 
 
 #endif
