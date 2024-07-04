@@ -14,11 +14,12 @@
 
 void startProgram();
 void clearScreen();
-void parseInput(char* input, char** parsedInput);
+int parseInput(char* input, char** parsedInput);
 int readCommandLine(char* input);
 void printDirectoryPath();
 void printDirectoryContents();
-void changeDirectories(char *input);
+int changeDirectories(char *input);
+int makeDirectory(char *input);
 
 
 #endif

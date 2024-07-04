@@ -3,6 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <sys/wait.h>
 #include <sys/utsname.h>
 #include <readline/readline.h>
@@ -17,11 +18,14 @@ void clearScreen(){
 void startProgram(){
     struct utsname systemInfo;
     clearScreen();
-    char *username =(char*)(malloc(1024*sizeof(char)));
+    char *username =(malloc(1024*sizeof(char)));
+    if(username == NULL){
+        fprintf(stderr, "Insufficient memory!\n");
+    }
     username = getenv("USER");
     printf("Welcome to the Shell!\n");
     if(uname(&systemInfo)!= 0){
-        fprintf(stderr, "Error: cannot get system information!");
+        fprintf(stderr, "Error: cannot get system information!\n");
     }
     printf("%s@%s: ", username, systemInfo.nodename);
 }
@@ -35,27 +39,32 @@ int readCommandLine(char* input){
         return 0;
     }
     else{
-        free(inputBuffer);
-        return 1;
+        printf("No command provided\n");
+        return -1;
     }
 }
 
-void parseInput(char *input, char** parsedInput){
+int parseInput(char *input, char** parsedInput){
     if(strlen(input) == 0){
-        printf("Command not found");
+        printf("Command not found\n");
+        return -1;
     }
-    for(int i = 0; i < strlen(input); i++){
+    for(int i = 0; i < sizeof(input); i++){
         parsedInput[i] = strsep(&input, " ");
         if(parsedInput[i] == NULL){
             break;
         }
+        if(strlen(parsedInput[i]) == 0){
+            i--;
+        }
     }
+    return 0;
 }
 
 void printDirectoryPath(){
     char cwd[1024];
     if(getcwd(cwd, sizeof(cwd)) == NULL){
-        fprintf(stderr, "Cannot retrieve currrent directory path!");
+        fprintf(stderr, "Cannot retrieve currrent directory path!\n");
     }
     printf("%s\n", cwd);
 }
@@ -64,12 +73,14 @@ void printDirectoryContents(){
     struct dirent *content;
     char cwd[1024];
     if(getcwd(cwd, sizeof(cwd)) == NULL){
-        fprintf(stderr, "Cannot retrieve currrent directory path!");
+        fprintf(stderr, "Cannot retrieve currrent directory path!\n");
     }
+
     DIR *directory = opendir(cwd);
     if(directory == NULL){
-        fprintf(stderr, "Cannot open current directory path");
+        fprintf(stderr, "Cannot open current directory path\n");
     }
+
     while((content = readdir(directory))){
         if((strcmp(content->d_name, ".") == 0) || (strcmp(content->d_name, "..") == 0)){
             continue;
@@ -81,27 +92,50 @@ void printDirectoryContents(){
     closedir(directory);
 }
 
-void changeDirectories(char *input){
-    char workBuf[1024];
-    parseInput(input, workBuf);
-    printf("%s\n",workBuf);
-    //chdir(&(workBuf[1]));
+int changeDirectories(char *input){
+    char** parsedBuffer = malloc(1024*sizeof(char));
+    if(parsedBuffer == NULL){
+        fprintf(stderr, "Insufficient memory!\n");
+        return -1;
+    }
+    if(parseInput(input, parsedBuffer) == -1){
+        fprintf(stderr, "Could not process command\n");
+        return -1;
+    }
+    if(chdir(parsedBuffer[1]) == -1){
+        fprintf(stderr, "Could not change directories!\n");
+        return -1;
+    }
+    printf("Current working directory: ");
+    printDirectoryPath();
+    free(parsedBuffer);
+    return 0;
 }
 
-void commandSupport(){
-    printf("\nCommands supported by my Shell:"
-    "\nls"
-    "\ncd"
-    "\npwd"
-    "\nexit"
-    "\ncode compilation"
-    "\n"
-
-    
-    
-    
-    );
+int makeDirectory(char *input){
+    char** parsedBuffer = malloc(1024*sizeof(char));
+    if(parsedBuffer == NULL){
+        fprintf(stderr, "Insufficient memory!\n");
+        return -1;
+    }
+    if(parseInput(input, parsedBuffer) == -1){
+        fprintf(stderr, "Could not process command\n");
+        return -1;
+    }
+    if(mkdir(parsedBuffer[1], 0777) == -1){
+        fprintf(stderr, "Could not make directory in specified path\n");
+        return -1;
+    }
+    printf("Successfully made directory! Located at: ");
+    printDirectoryPath();
+    return 0;
 }
+
+
+
+
+
+
 
 
 
