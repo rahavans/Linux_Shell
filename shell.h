@@ -21,6 +21,10 @@ void printDirectoryContents(); // ls
 int changeDirectories(char *input); // cd
 int makeDirectory(char *input); // mkdir
 int removeDirectory(char *input); // rmdir
+int copyFiles(char *source, char *destination); // cp (FILES ONLY)
+int moveFiles(char *source, char *destination); // mv (FILES ONLY)
+
+
 
 
 #endif

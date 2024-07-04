@@ -44,20 +44,15 @@ int readCommandLine(char* input){
     }
 }
 
-int parseInput(char *input, char** parsedInput){
-    if(strlen(input) == 0){
-        printf("Command not found\n");
-        return -1;
-    }
-    for(int i = 0; i < sizeof(input); i++){
-        parsedInput[i] = strsep(&input, " ");
-        if(parsedInput[i] == NULL){
-            break;
-        }
-        if(strlen(parsedInput[i]) == 0){
-            i--;
-        }
-    }
+int parseInput(char *input, char** parsedInput){ 
+    for (int i = 0; i < 1024; i++) { 
+        parsedInput[i] = strsep(&input, " "); 
+  
+        if (parsedInput[i] == NULL) 
+            break; 
+        if (strlen(parsedInput[i]) == 0) 
+            i--; 
+    } 
     return 0;
 }
 
@@ -93,64 +88,62 @@ void printDirectoryContents(){
 }
 
 int changeDirectories(char *input){
-    char** parsedBuffer = malloc(1024*sizeof(char));
-    if(parsedBuffer == NULL){
-        fprintf(stderr, "Insufficient memory!\n");
-        return -1;
-    }
-    if(parseInput(input, parsedBuffer) == -1){
-        fprintf(stderr, "Could not process command\n");
-        return -1;
-    }
-    if(chdir(parsedBuffer[1]) == -1){
+    if(chdir(input) == -1){
         fprintf(stderr, "Could not change directories!\n");
         return -1;
     }
     printf("Current working directory: ");
     printDirectoryPath();
-    free(parsedBuffer);
     return 0;
 }
 
 int makeDirectory(char *input){
-    char** parsedBuffer = malloc(1024*sizeof(char));
-    if(parsedBuffer == NULL){
-        fprintf(stderr, "Insufficient memory!\n");
-        return -1;
-    }
-    if(parseInput(input, parsedBuffer) == -1){
-        fprintf(stderr, "Could not process command\n");
-        return -1;
-    }
-    if(mkdir(parsedBuffer[1], 0777) == -1){
+    if(mkdir(input, 0777) == -1){
         fprintf(stderr, "Could not make directory in specified path\n");
         return -1;
     }
     printf("Successfully made directory! Located at: ");
     printDirectoryPath();
-    free(parsedBuffer);
     return 0;
 }
 
 int removeDirectory(char *input){
-    char** parsedBuffer = malloc(1024*sizeof(char*));
-    if(parsedBuffer == NULL){
-        fprintf(stderr, "Insufficient memory!\n");
+    if(rmdir(input) == -1){
+        fprintf(stderr, "Cannot remove specified directory\n");
         return -1;
     }
-    if(parseInput(input, parsedBuffer) == -1){
-        fprintf(stderr, "Could not process command\n");
-        return -1;
-    }
-    if(rmdir(parsedBuffer[1]) == -1){
-        fprintf(stderr, "Cannot remove specified directory");
-        return -1;
-    }
-    printf("Successfully removed directory: %s", parsedBuffer[1]);
-    free(parsedBuffer);
+    printf("Successfully removed directory: %s", input);
     return 0;
 }
 
+int copyFiles(char *source, char *destination){
+    FILE *sourceFile = fopen(source, "rb");
+    FILE *destinationFile = fopen(destination, "wb");
+    if(sourceFile == NULL || destinationFile == NULL){
+        fprintf(stderr, "Error opening source or destination file\n");
+        return -1;
+    }
+    char buffer[1024];
+    size_t bytesRead;
+
+    while(((bytesRead = fread(buffer, 1, 1024, sourceFile)) > 0)){
+        if(fwrite(buffer, 1, bytesRead, destinationFile) != bytesRead){
+            fprintf(stderr, "Error writing to destination file/n");
+            fclose(sourceFile);
+            fclose(destinationFile);
+            return -1;
+        }
+    }
+
+    if(ferror(sourceFile)){
+        fprintf(stderr, "Error reading from source file after copying destination file\n");
+    }
+
+    fclose(sourceFile);
+    fclose(destinationFile);
+    printf("Successfully copied from %s to %s", source, destination);
+    return 0;
+}
 
 
 
