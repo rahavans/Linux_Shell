@@ -40,10 +40,25 @@ int main(){
     else if(strcmp(parsedInputBuffer[0], "head") == 0){
       displayFirstFewLines(parsedInputBuffer[1]);
     }
+    else if(strcmp(parsedInputBuffer[0], "tail") == 0){
+      displayLastFewLines(parsedInputBuffer[1]);
+    }
+    else if(strcmp(parsedInputBuffer[0], "whoami") == 0){
+      displayUserName();
+    }
     else if(strcmp(parsedInputBuffer[0], "clear") == 0){
       clearScreen();
     }
+    else if(strcmp(parsedInputBuffer[0], "exit") == 0){
+      exitShell();
+    }
+    else if(strcmp(parsedInputBuffer[0], "kill") == 0){
+      killProcess(atoi(parsedInputBuffer[1]));
+    }
     readCommandLine(inputBuffer);
   }
+
+  free(inputBuffer);
+  free(parsedInputBuffer);
   return 0;
 }

@@ -25,7 +25,9 @@ int copyFile(char *source, char *destination); // cp (FILES ONLY)
 int deleteFile(char *input); // rm (FILES ONLY)
 void displayFileContents(char *filepath); // cat
 void displayFirstFewLines(char *filepath); // head
-
-
+void displayLastFewLines(char *filepath); // tail
+int killProcess(int pid); // kill
+void displayUserName(); // whoami
+void exitShell(); // exit
 
 #endif

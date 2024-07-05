@@ -3,6 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <signal.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <sys/utsname.h>
@@ -47,7 +48,6 @@ int readCommandLine(char* input){
 int parseInput(char *input, char** parsedInput){ 
     for (int i = 0; i < 1024; i++) { 
         parsedInput[i] = strsep(&input, " "); 
-  
         if (parsedInput[i] == NULL) 
             break; 
         if (strlen(parsedInput[i]) == 0) 
@@ -70,7 +70,6 @@ void printDirectoryContents(){
     if(getcwd(cwd, sizeof(cwd)) == NULL){
         fprintf(stderr, "Cannot retrieve currrent directory path!\n");
     }
-
     DIR *directory = opendir(cwd);
     if(directory == NULL){
         fprintf(stderr, "Cannot open current directory path\n");
@@ -125,7 +124,6 @@ int copyFile(char *source, char *destination){
     }
     char buffer[1024];
     size_t bytesRead;
-
     while(((bytesRead = fread(buffer, 1, 1024, sourceFile)) > 0)){
         if(fwrite(buffer, 1, bytesRead, destinationFile) != bytesRead){
             fprintf(stderr, "Error writing to destination file/n");
@@ -134,12 +132,10 @@ int copyFile(char *source, char *destination){
             return -1;
         }
     }
-
     if(ferror(sourceFile)){
         fprintf(stderr, "Error reading from source file after copying destination file\n");
         return -1;
     }
-
     fclose(sourceFile);
     fclose(destinationFile);
     printf("Successfully copied from %s to %s\n", source, destination);
@@ -157,9 +153,11 @@ int deleteFile(char *input){
 
 void displayFileContents(char *filepath){
     FILE *fp = fopen(filepath, "r");
+    if(fp == NULL){
+        fprintf(stderr, "Error opening file\n");
+    }
     char buffer[1024];
     size_t bytesRead;
-
     while(((bytesRead = fread(buffer, 1, 1024, fp)) > 0)){
         fwrite(buffer, 1, bytesRead, stdout);
     }
@@ -168,15 +166,57 @@ void displayFileContents(char *filepath){
 
 void displayFirstFewLines(char *filepath){
     FILE *fp = fopen(filepath, "r");
+    if(fp == NULL){
+        fprintf(stderr, "Error opening file\n");
+    }
     char buffer[1024];
     size_t bytesRead;
     int lines = 4;
     int count = 0;
-
     while(lines > count && fgets(buffer, sizeof(buffer), fp) != NULL){
         fputs(buffer, stdout);
         count++;
     }
-    
+    printf("\n");
     fclose(fp);
+}
+
+void displayLastFewLines(char *filepath){
+    FILE *fp = fopen(filepath, "r");
+    if(fp == NULL){
+        fprintf(stderr, "Error opening file\n");
+    }
+    char linesRead[1024][1024];
+    int lineCount = 0;
+    while(fgets(linesRead[lineCount % 4], 1024, fp) != NULL){
+        lineCount++;
+    }
+    int start = lineCount > 4 ? lineCount % 4 : 0;
+    for(int i = 0; i < 4; i++){
+        fputs(linesRead[(start + i) % 4], stdout);
+    }
+    printf("\n");
+}
+
+void displayUserName(){
+    struct utsname systemInfo;
+    char *username =(malloc(1024*sizeof(char)));
+    if(username == NULL){
+        fprintf(stderr, "Insufficient memory!\n");
+    }
+    username = getenv("USER");
+    printf("%s\n", username);
+}
+
+int killProcess(int pid){
+    if(kill(pid, SIGKILL) == -1){
+        fprintf(stderr, "Error killing process\n");
+        return -1;
+    }
+    printf("Killed process: %d\n", pid);
+    return 0;
+}
+
+void exitShell(){
+    exit(1);
 }
