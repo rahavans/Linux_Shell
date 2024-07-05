@@ -116,9 +116,9 @@ int removeDirectory(char *input){
     return 0;
 }
 
-int copyFiles(char *source, char *destination){
-    FILE *sourceFile = fopen(source, "rb");
-    FILE *destinationFile = fopen(destination, "wb");
+int copyFile(char *source, char *destination){
+    FILE *sourceFile = fopen(source, "r");
+    FILE *destinationFile = fopen(destination, "w");
     if(sourceFile == NULL || destinationFile == NULL){
         fprintf(stderr, "Error opening source or destination file\n");
         return -1;
@@ -137,18 +137,46 @@ int copyFiles(char *source, char *destination){
 
     if(ferror(sourceFile)){
         fprintf(stderr, "Error reading from source file after copying destination file\n");
+        return -1;
     }
 
     fclose(sourceFile);
     fclose(destinationFile);
-    printf("Successfully copied from %s to %s", source, destination);
+    printf("Successfully copied from %s to %s\n", source, destination);
     return 0;
 }
 
+int deleteFile(char *input){
+    if(remove(input) != 0){
+        fprintf(stderr, "Cannot delete file from directory\n");
+        return -1;
+    }
+    printf("Successfully deleted %s\n", input);
+    return 0;
+}
 
+void displayFileContents(char *filepath){
+    FILE *fp = fopen(filepath, "r");
+    char buffer[1024];
+    size_t bytesRead;
 
+    while(((bytesRead = fread(buffer, 1, 1024, fp)) > 0)){
+        fwrite(buffer, 1, bytesRead, stdout);
+    }
+    fclose(fp);
+}
 
+void displayFirstFewLines(char *filepath){
+    FILE *fp = fopen(filepath, "r");
+    char buffer[1024];
+    size_t bytesRead;
+    int lines = 4;
+    int count = 0;
 
-
-
-
+    while(lines > count && fgets(buffer, sizeof(buffer), fp) != NULL){
+        fputs(buffer, stdout);
+        count++;
+    }
+    
+    fclose(fp);
+}

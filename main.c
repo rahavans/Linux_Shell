@@ -25,8 +25,23 @@ int main(){
     else if(strcmp(parsedInputBuffer[0], "rmdir") == 0){
       removeDirectory(parsedInputBuffer[1]);
     }
+    else if(strcmp(parsedInputBuffer[0], "mkdir") == 0){
+      makeDirectory(parsedInputBuffer[1]);
+    }
     else if(strcmp(parsedInputBuffer[0], "cp") == 0){
-      copyFiles(parsedInputBuffer[1], parsedInputBuffer[2]);
+      copyFile(parsedInputBuffer[1], parsedInputBuffer[2]);
+    }
+    else if(strcmp(parsedInputBuffer[0], "rm") == 0){
+      deleteFile(parsedInputBuffer[1]);
+    }
+    else if(strcmp(parsedInputBuffer[0], "cat") == 0){
+      displayFileContents(parsedInputBuffer[1]);
+    }
+    else if(strcmp(parsedInputBuffer[0], "head") == 0){
+      displayFirstFewLines(parsedInputBuffer[1]);
+    }
+    else if(strcmp(parsedInputBuffer[0], "clear") == 0){
+      clearScreen();
     }
     readCommandLine(inputBuffer);
   }
