@@ -17,18 +17,9 @@ void clearScreen(){
 }
 
 void startProgram(){
-    struct utsname systemInfo;
     clearScreen();
-    char *username =(malloc(1024*sizeof(char)));
-    if(username == NULL){
-        fprintf(stderr, "Insufficient memory!\n");
-    }
-    username = getenv("USER");
     printf("Welcome to the Shell!\n");
-    if(uname(&systemInfo)!= 0){
-        fprintf(stderr, "Error: cannot get system information!\n");
-    }
-    printf("%s@%s: ", username, systemInfo.nodename);
+    using_history();
 }
 
 int readCommandLine(char* input){
@@ -69,12 +60,13 @@ void printDirectoryContents(){
     char cwd[1024];
     if(getcwd(cwd, sizeof(cwd)) == NULL){
         fprintf(stderr, "Cannot retrieve currrent directory path!\n");
+        return;
     }
     DIR *directory = opendir(cwd);
     if(directory == NULL){
         fprintf(stderr, "Cannot open current directory path\n");
+        return;
     }
-
     while((dirContent = readdir(directory))){
         if((strcmp(dirContent->d_name, ".") == 0) || (strcmp(dirContent->d_name, "..") == 0)){
             continue;
@@ -111,7 +103,26 @@ int removeDirectory(char *input){
         fprintf(stderr, "Cannot remove specified directory\n");
         return -1;
     }
-    printf("Successfully removed directory: %s", input);
+    printf("Successfully removed directory: %s\n", input);
+    return 0;
+}
+
+int moveDirectory(char* source, char* destination){
+    char* directoryName = strrchr(source, '/');
+    if (directoryName != NULL) {
+        directoryName++;
+    } 
+    else{
+        directoryName = source;
+    }
+    strcat(destination, "/");
+    strcat(destination, directoryName);
+
+    if(rename(source, destination) != 0){
+        fprintf(stderr, "Could not move file to specified destination\n");
+        return -1;
+    }
+    printf("Successfully moved directory %s to %s\n", source, destination);
     return 0;
 }
 
@@ -142,6 +153,25 @@ int copyFile(char *source, char *destination){
     return 0;
 }
 
+int renameFile(char *source, char *destination){
+    char* fileName = strrchr(source, '/');
+    if (fileName != NULL) {
+        fileName++;
+    } 
+    else{
+        fileName = source;
+    }
+    strcat(destination, "/");
+    strcat(destination, fileName);
+
+    if(rename(source, destination) != 0){
+        fprintf(stderr, "Could not move file to specified destination\n");
+        return -1;
+    }
+    printf("Successfully moved %s to %s\n", source, destination);
+    return 0;
+}
+
 int deleteFile(char *input){
     if(remove(input) != 0){
         fprintf(stderr, "Cannot delete file from directory\n");
@@ -155,6 +185,7 @@ void displayFileContents(char *filepath){
     FILE *fp = fopen(filepath, "r");
     if(fp == NULL){
         fprintf(stderr, "Error opening file\n");
+        return;
     }
     char buffer[1024];
     size_t bytesRead;
@@ -168,13 +199,17 @@ void displayFirstFewLines(char *filepath){
     FILE *fp = fopen(filepath, "r");
     if(fp == NULL){
         fprintf(stderr, "Error opening file\n");
+        return;
     }
     char buffer[1024];
     size_t bytesRead;
     int lines = 4;
     int count = 0;
     while(lines > count && fgets(buffer, sizeof(buffer), fp) != NULL){
-        fputs(buffer, stdout);
+        if(fputs(buffer, stdout) == EOF){
+            fprintf(stderr, "Error printing file content to console");
+            break;
+        }
         count++;
     }
     printf("\n");
@@ -185,26 +220,29 @@ void displayLastFewLines(char *filepath){
     FILE *fp = fopen(filepath, "r");
     if(fp == NULL){
         fprintf(stderr, "Error opening file\n");
+        return;
     }
-    char linesRead[1024][1024];
+    char linesRead[4][1024];
     int lineCount = 0;
     while(fgets(linesRead[lineCount % 4], 1024, fp) != NULL){
         lineCount++;
     }
     int start = lineCount > 4 ? lineCount % 4 : 0;
-    for(int i = 0; i < 4; i++){
+    int count = lineCount < 4 ? lineCount : 4;
+    for(int i = 0; i < count; i++){
         fputs(linesRead[(start + i) % 4], stdout);
     }
     printf("\n");
 }
 
 void displayUserName(){
-    struct utsname systemInfo;
-    char *username =(malloc(1024*sizeof(char)));
-    if(username == NULL){
-        fprintf(stderr, "Insufficient memory!\n");
+    char username[1024];
+    char* userEnv = getenv("USER");
+    if(userEnv == NULL){
+        fprintf(stderr, "Error finding username\n");
+        return;
     }
-    username = getenv("USER");
+    strcpy(username, userEnv);
     printf("%s\n", username);
 }
 
@@ -215,6 +253,14 @@ int killProcess(int pid){
     }
     printf("Killed process: %d\n", pid);
     return 0;
+}
+void displayCommandHistory(){
+    HIST_ENTRY *commandHistory;
+    int i = 1;
+    while((commandHistory = history_get(i)) != NULL){
+        printf("%s\n", commandHistory->line);
+        i++;
+    }
 }
 
 void exitShell(){

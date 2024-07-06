@@ -28,8 +28,14 @@ int main(){
     else if(strcmp(parsedInputBuffer[0], "mkdir") == 0){
       makeDirectory(parsedInputBuffer[1]);
     }
+    else if(strcmp(parsedInputBuffer[0], "mvdir") == 0){
+      moveDirectory(parsedInputBuffer[1], parsedInputBuffer[2]);
+    }
     else if(strcmp(parsedInputBuffer[0], "cp") == 0){
       copyFile(parsedInputBuffer[1], parsedInputBuffer[2]);
+    }
+    else if(strcmp(parsedInputBuffer[0], "mv") == 0){
+      renameFile(parsedInputBuffer[1], parsedInputBuffer[2]);
     }
     else if(strcmp(parsedInputBuffer[0], "rm") == 0){
       deleteFile(parsedInputBuffer[1]);
@@ -48,6 +54,9 @@ int main(){
     }
     else if(strcmp(parsedInputBuffer[0], "clear") == 0){
       clearScreen();
+    }
+    else if(strcmp(parsedInputBuffer[0], "history") == 0){
+      displayCommandHistory();
     }
     else if(strcmp(parsedInputBuffer[0], "exit") == 0){
       exitShell();

@@ -6,6 +6,8 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <signal.h>
+#include <sys/stat.h>
 #include <sys/wait.h>
 #include <sys/utsname.h>
 #include <readline/readline.h>
@@ -21,13 +23,17 @@ void printDirectoryContents(); // ls
 int changeDirectories(char *input); // cd
 int makeDirectory(char *input); // mkdir
 int removeDirectory(char *input); // rmdir
+int moveDirectory(char* source, char* destination); // mvdir (CUSTOM COMMAND)
 int copyFile(char *source, char *destination); // cp (FILES ONLY)
+int renameFile(char *source, char* destination); // mv (FILES ONLY)
 int deleteFile(char *input); // rm (FILES ONLY)
 void displayFileContents(char *filepath); // cat
 void displayFirstFewLines(char *filepath); // head
 void displayLastFewLines(char *filepath); // tail
 int killProcess(int pid); // kill
 void displayUserName(); // whoami
+void runSystemCommand(char* command);
+void displayCommandHistory(); // history
 void exitShell(); // exit
 
 #endif
