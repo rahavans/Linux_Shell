@@ -26,7 +26,11 @@ exit <br />
 
 Compilation and Execution via Terminal:
 
+Since this is a C program, it can be compiled and executed through the terminal. Be sure to link the readline library using -lreadline. The terminal command is as follows:
+
 gcc main.c shell.c -lreadline
+
+Since I am running on macOS, the default executable file is a.out, and to run the executable is as follows:
 
 ./a.out
 
