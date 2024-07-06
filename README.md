@@ -6,23 +6,23 @@ I am currently trying to write up to 20 terminal commands in C available from UN
 
 My Shell currently supports the following commands:
 
-cd
-ls
-pwd
-mkdir
-rmdir
-mvdir (A custom command that moves entire directory)
-cp (FILES ONLY, ONE AT A TIME)
-rm (FILES ONLY, ONE AT A TIME)
-mv (FILES ONLY, ONE AT A TIME)
-cat
-head
-tail
-kill
-whoami
-history
-clear
-exit
+cd <br />
+ls <br />
+pwd <br />
+mkdir <br />
+rmdir <br />
+mvdir (A custom command that moves entire directory) <br />
+cp (FILES ONLY, ONE AT A TIME) <br />
+rm (FILES ONLY, ONE AT A TIME) <br />
+mv (FILES ONLY, ONE AT A TIME) <br />
+cat <br />
+head <br />
+tail <br />
+kill <br />
+whoami <br />
+history <br />
+clear <br />
+exit <br />
 
 Compilation and Execution via Terminal:
 
