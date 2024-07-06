@@ -254,6 +254,7 @@ int killProcess(int pid){
     printf("Killed process: %d\n", pid);
     return 0;
 }
+
 void displayCommandHistory(){
     HIST_ENTRY *commandHistory;
     int i = 1;

@@ -32,7 +32,6 @@ void displayFirstFewLines(char *filepath); // head
 void displayLastFewLines(char *filepath); // tail
 int killProcess(int pid); // kill
 void displayUserName(); // whoami
-void runSystemCommand(char* command);
 void displayCommandHistory(); // history
 void exitShell(); // exit
 
