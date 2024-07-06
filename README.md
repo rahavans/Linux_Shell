@@ -12,9 +12,9 @@ pwd <br />
 mkdir <br />
 rmdir <br />
 mvdir (A custom command that moves entire directory) <br />
-cp (FILES ONLY, ONE AT A TIME) <br />
-rm (FILES ONLY, ONE AT A TIME) <br />
-mv (FILES ONLY, ONE AT A TIME) <br />
+cp (Copies a file's content to another existing file) <br />
+rm (Removes a file) <br />
+mv (Moves a file to a different directory) <br />
 cat <br />
 head <br />
 tail <br />
