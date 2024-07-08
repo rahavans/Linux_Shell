@@ -23,15 +23,19 @@ void printDirectoryContents(); // ls
 int changeDirectories(char *input); // cd
 int makeDirectory(char *input); // mkdir
 int removeDirectory(char *input); // rmdir
+int removeDirectoryContents(char *input); // rm -r
 int moveDirectory(char* source, char* destination); // mvdir (CUSTOM COMMAND)
 int copyFile(char *source, char *destination); // cp (FILES ONLY)
 int renameFile(char *source, char* destination); // mv (FILES ONLY)
 int deleteFile(char *input); // rm (FILES ONLY)
+int changeFileorDirectoryPermissions(char *input); // chmod
+int changeFileorDirectoryOwnership(char *input); // chown
 void displayFileContents(char *filepath); // cat
 void displayFirstFewLines(char *filepath); // head
 void displayLastFewLines(char *filepath); // tail
 int killProcess(int pid); // kill
 void displayUserName(); // whoami
+void displaySystemInfo(); // uname
 void displayCommandHistory(); // history
 void exitShell(); // exit
 

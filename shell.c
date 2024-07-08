@@ -107,6 +107,50 @@ int removeDirectory(char *input){
     return 0;
 }
 
+int removeDirectoryContents(char *input){
+    DIR* directory = opendir(input);
+    if(directory == NULL){
+        fprintf(stderr, "Cannot open current directory path\n");
+        return -1;
+    }
+    struct dirent* dirContent;
+    char filePath[1024] = "";
+    while ((dirContent = readdir(directory)) != NULL){
+        if((strcmp(dirContent->d_name, ".") == 0) || (strcmp(dirContent->d_name, "..") == 0)){
+            continue;
+        }
+        snprintf(filePath, sizeof(filePath), "%s/%s", input, dirContent->d_name);
+
+    struct stat fileInfo;
+    if(stat(filePath, &fileInfo) == -1){
+        fprintf(stderr, "Could not create stat struct\n");
+        closedir(directory);
+        return -1;
+    }
+    if(S_ISDIR(fileInfo.st_mode)){
+        if(removeDirectoryContents(filePath) == -1){
+            closedir(directory);
+            return -1;
+        }
+        if(removeDirectory(filePath) == -1){
+            fprintf(stderr, "Could not delete empty directory\n");
+            closedir(directory);
+            return -1;
+        }
+        else{
+            if(deleteFile(filePath) == -1){
+                fprintf(stderr, "Could not delete file\n");
+                closedir(directory);
+                return -1;
+            }
+        }
+    }
+}
+    closedir(directory);
+    printf("Successfully deleted directory at: %s", input);
+    return 0;
+}
+
 int moveDirectory(char* source, char* destination){
     char* directoryName = strrchr(source, '/');
     if (directoryName != NULL) {
@@ -244,6 +288,15 @@ void displayUserName(){
     }
     strcpy(username, userEnv);
     printf("%s\n", username);
+}
+
+void displaySystemInfo(){
+    struct utsname systemInfo;
+    if(uname(&systemInfo) == -1){
+        fprintf(stderr, "Cannpot retrieve system information\n");
+        return;
+    }
+    printf("%s\n", systemInfo.sysname);
 }
 
 int killProcess(int pid){

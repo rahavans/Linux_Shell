@@ -12,6 +12,7 @@ pwd <br />
 mkdir <br />
 rmdir <br />
 mvdir (A custom command that moves entire directory) <br />
+rm -r (Recursively deletes an entire directory) <br />
 cp (Copies a file's content to another existing file) <br />
 rm (Removes a file) <br />
 mv (Moves a file to a different directory) <br />
@@ -20,6 +21,7 @@ head <br />
 tail <br />
 kill <br />
 whoami <br />
+uname <br />
 history <br />
 clear <br />
 exit <br />

@@ -25,6 +25,9 @@ int main(){
     else if(strcmp(parsedInputBuffer[0], "rmdir") == 0){
       removeDirectory(parsedInputBuffer[1]);
     }
+    else if((strcmp(parsedInputBuffer[0], "rm") == 0) && (strcmp(parsedInputBuffer[1], "-r") == 0)){
+      removeDirectoryContents(parsedInputBuffer[2]);
+    }
     else if(strcmp(parsedInputBuffer[0], "mkdir") == 0){
       makeDirectory(parsedInputBuffer[1]);
     }
@@ -51,6 +54,9 @@ int main(){
     }
     else if(strcmp(parsedInputBuffer[0], "whoami") == 0){
       displayUserName();
+    }
+    else if(strcmp(parsedInputBuffer[0], "uname") == 0){
+      displaySystemInfo();
     }
     else if(strcmp(parsedInputBuffer[0], "clear") == 0){
       clearScreen();
