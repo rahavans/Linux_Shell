@@ -16,8 +16,8 @@ rm -r (Recursively deletes an entire directory) <br />
 cp (Copies a file's content to another existing file) <br />
 rm (Removes a file) <br />
 mv (Moves a file to a different directory) <br />
-chmod
-chown
+chmod <br />
+chown <br />
 cat <br />
 head <br />
 tail <br />
