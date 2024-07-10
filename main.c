@@ -5,7 +5,7 @@
 int main(){
   char *inputBuffer = malloc(1024*sizeof(char));
   char **parsedInputBuffer = malloc(1024*sizeof(char*));
-  if(inputBuffer == NULL){
+  if(inputBuffer == NULL || parsedInputBuffer == NULL){
     fprintf(stderr, "Insufficient memory!");
   }
   clearScreen();
