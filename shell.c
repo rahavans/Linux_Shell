@@ -315,9 +315,26 @@ void displayCommandHistory(){
     }
 }
 
-int changeFileorDirectoryPerms(int perm, char* input){}
+int changeFileorDirectoryPerms(char* permission, char* input){
+    int perm = atoi(permission);
+    if(chmod(perm, input) == -1){
+        fprintf(stderr, "Could not switch file or directory permissions\n");
+        return -1;
+    }
+    printf("Successfully switched permission of %s to %s", input, permission);
+    return 0;
+}
 
-int changeFileorDirectoryOwnership(char *filePath, int user, int group){}
+int changeFileorDirectoryOwnership(char* user, char* group, char *input){
+    int userNum = atoi(user);
+    int groupNum = atoi(group);
+    if(chown(input, userNum, groupNum) == -1){
+        fprintf(stderr, "Could not change ownership of file or directory\n");
+        return -1;
+    }
+    printf("Successfully changed ownership of file or directory at %s", input);
+    return 0;
+}
 
 void exitShell(){
     exit(1);

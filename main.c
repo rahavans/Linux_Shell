@@ -43,6 +43,12 @@ int main(){
     else if(strcmp(parsedInputBuffer[0], "rm") == 0){
       deleteFile(parsedInputBuffer[1]);
     }
+    else if(strcmp(parsedInputBuffer[0], "chmod") == 0){
+      changeFileorDirectoryPermissions(parsedInputBuffer[1], parsedInputBuffer[2]);
+    }
+    else if(strcmp(parsedInputBuffer[0], "chown") == 0){
+      changeFileorDirectoryOwnership(parsedInputBuffer[1], parsedInputBuffer[2], parsedInputBuffer[3]);    
+    }
     else if(strcmp(parsedInputBuffer[0], "cat") == 0){
       displayFileContents(parsedInputBuffer[1]);
     }

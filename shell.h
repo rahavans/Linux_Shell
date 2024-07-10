@@ -28,8 +28,8 @@ int moveDirectory(char* source, char* destination); // mvdir (CUSTOM COMMAND)
 int copyFile(char *source, char *destination); // cp (FILES ONLY)
 int renameFile(char *source, char* destination); // mv (FILES ONLY)
 int deleteFile(char *input); // rm (FILES ONLY)
-int changeFileorDirectoryPermissions(char *input); // chmod
-int changeFileorDirectoryOwnership(char *input); // chown
+int changeFileorDirectoryPermissions(char *permission, char *input); // chmod
+int changeFileorDirectoryOwnership(char* user, char* group, char *input); // chown
 void displayFileContents(char *filepath); // cat
 void displayFirstFewLines(char *filepath); // head
 void displayLastFewLines(char *filepath); // tail
