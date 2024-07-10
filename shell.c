@@ -315,6 +315,10 @@ void displayCommandHistory(){
     }
 }
 
+int changeFileorDirectoryPerms(int perm, char* input){}
+
+int changeFileorDirectoryOwnership(char *filePath, int user, int group){}
+
 void exitShell(){
     exit(1);
 }
